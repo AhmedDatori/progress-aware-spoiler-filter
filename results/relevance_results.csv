@@ -1,0 +1,4 @@
+model,base,lr,dev_auc,test_auc,test_acc,train_secs,note
+relevance_ft_base,nomic-ai/modernbert-embed-base,3e-05,0.9293833954671873,0.8835232753385018,0.7922007582596137,146,
+relevance_ft_large,answerdotai/ModernBERT-large,2e-05,0.9224,0.8696,0.7875,230,"L4, 21 Nov; numbers from the run log (saved predictions were lost in a VM/laptop failure)"
+relevance_ft,nomic-ai/modernbert-embed-base,3e-05,0.9267,0.8825,0.7974,88,"A100, 22 Nov; same recipe as relevance_ft_base, retrained on the VM for --clean"

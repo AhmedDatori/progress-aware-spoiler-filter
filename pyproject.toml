@@ -1,0 +1,9 @@
+[project]
+name = "progress-aware-spoiler-filter"
+version = "1.0.0"
+description = "Progress-aware spoiler filter: hide TV-show comments only from viewers who have not watched the episode they spoil"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "torch==2.15.0", "transformers==4.57.6", "sentence-transformers>=5.0", "rank-bm25", "pandas", "numpy",
+  "scikit-learn", "tqdm", "matplotlib", "accelerate", "datasets",
+]

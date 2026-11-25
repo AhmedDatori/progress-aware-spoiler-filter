@@ -1,0 +1,11 @@
+w=0.0  val MRR 0.5544
+w=0.1  val MRR 0.5658
+w=0.2  val MRR 0.5726
+w=0.3  val MRR 0.5735
+w=0.4  val MRR 0.5718
+w=0.5  val MRR 0.5651
+w=0.7  val MRR 0.5551
+w=1.0  val MRR 0.5377
+best w on val: 0.3
+{'model': 'v6_first', 'MRR': np.float64(0.5735), 'top1': np.float64(0.4302), 'top3': np.float64(0.653), 'MRR_demon_slayer_kimetsu_no_yaiba': np.float64(0.4693), 'MRR_dr_stone': np.float64(0.5582), 'MRR_mob_psycho_100': np.float64(0.5072), 'MRR_spy_x_family': np.float64(0.6547), 'split': 'val'}
+{'model': 'v6_first', 'MRR': np.float64(0.5557), 'top1': np.float64(0.4064), 'top3': np.float64(0.6386), 'MRR_arcane': np.float64(0.6366), 'MRR_attack_on_titan': np.float64(0.5056), 'MRR_kaguya_sama_love_is_war': np.float64(0.5385), 'MRR_legend_of_korra': np.float64(0.5898), 'split': 'test'}

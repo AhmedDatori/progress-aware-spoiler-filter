@@ -1,0 +1,40 @@
+config: {'bi': 'v6_bi', 'first': 'v6_first', 'tag': 'v6_rr24_s0', 'base': 'Alibaba-NLP/gte-reranker-modernbert-base', 'n': 24000, 'group': 8, 'batch': 16, 'micro': 4, 'epochs': 1, 'lr': 2e-05, 'max_len': 384, 'cap': 15000, 'seed': 0, 'kmax': 15, 'mmax': 4, 'splits': 'val,test', 'no_train': False}
+Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 5281.21it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/138 [00:00<?, ?it/s]Loading weights: 100%|██████████| 138/138 [00:00<00:00, 6221.13it/s]
+train comments: 24000 {'game_of_thrones': 7077, 'better_call_saul': 7048, 'breaking_bad': 4052, 'my_hero_academia': 3462, 'stranger_things': 2361}
+24,000 groups mined in 93s
+{'step': 50, 'loss': 1.9132626551389693, 'acc': 0.34625, 'secs': 111}
+{'step': 100, 'loss': 1.8404809772968291, 'acc': 0.375, 'secs': 222}
+{'step': 150, 'loss': 1.7436329546570777, 'acc': 0.37875, 'secs': 334}
+{'step': 200, 'loss': 1.7581622241437436, 'acc': 0.3825, 'secs': 445}
+{'step': 250, 'loss': 1.6952404072880745, 'acc': 0.4075, 'secs': 558}
+{'step': 300, 'loss': 1.6722769051790238, 'acc': 0.42125, 'secs': 669}
+{'step': 350, 'loss': 1.5884517225623132, 'acc': 0.44875, 'secs': 781}
+{'step': 400, 'loss': 1.5734868295490743, 'acc': 0.4675, 'secs': 893}
+{'step': 450, 'loss': 1.5809517450630666, 'acc': 0.46875, 'secs': 1005}
+{'step': 500, 'loss': 1.6450006733834743, 'acc': 0.4175, 'secs': 1118}
+{'step': 550, 'loss': 1.543212826102972, 'acc': 0.49125, 'secs': 1231}
+{'step': 600, 'loss': 1.5474695855379104, 'acc': 0.475, 'secs': 1344}
+{'step': 650, 'loss': 1.5646471989154815, 'acc': 0.445, 'secs': 1456}
+{'step': 700, 'loss': 1.5619800779223443, 'acc': 0.4475, 'secs': 1570}
+{'step': 750, 'loss': 1.4493225437402726, 'acc': 0.4975, 'secs': 1682}
+{'step': 800, 'loss': 1.5364879566431044, 'acc': 0.48625, 'secs': 1795}
+{'step': 850, 'loss': 1.4710509246587753, 'acc': 0.51625, 'secs': 1906}
+{'step': 900, 'loss': 1.4698437932133674, 'acc': 0.4975, 'secs': 2018}
+{'step': 950, 'loss': 1.5211563283205032, 'acc': 0.4825, 'secs': 2130}
+{'step': 1000, 'loss': 1.4844846477359532, 'acc': 0.47625, 'secs': 2241}
+{'step': 1050, 'loss': 1.4329950274527072, 'acc': 0.4975, 'secs': 2354}
+{'step': 1100, 'loss': 1.4590926152467727, 'acc': 0.50625, 'secs': 2465}
+{'step': 1150, 'loss': 1.4896027919463812, 'acc': 0.46875, 'secs': 2579}
+{'step': 1200, 'loss': 1.4556754979491233, 'acc': 0.505, 'secs': 2692}
+{'step': 1250, 'loss': 1.4137584533542396, 'acc': 0.52, 'secs': 2804}
+{'step': 1300, 'loss': 1.5083763360977174, 'acc': 0.48875, 'secs': 2916}
+{'step': 1350, 'loss': 1.4639186932146548, 'acc': 0.49, 'secs': 3028}
+{'step': 1400, 'loss': 1.4621133610606194, 'acc': 0.4925, 'secs': 3140}
+{'step': 1450, 'loss': 1.5088495270907878, 'acc': 0.475, 'secs': 3252}
+{'step': 1500, 'loss': 1.5055770038068295, 'acc': 0.4875, 'secs': 3365}
+trained in 3365s
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.24it/s]Writing model shards: 100%|██████████| 1/1 [00:00<00:00,  1.24it/s]
+val: 159,255 pairs scored in 1093s
+test: 179,417 pairs scored in 1311s

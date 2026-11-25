@@ -1,0 +1,22 @@
+# environment
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.claude/
+
+# large or downloadable (see src/download*.sh)
+data/
+models/
+results/scores/
+results/*.parquet
+results/logs_v6/pip.log
+vm_out/
+**/ckpt/
+
+# personal / course working files (kept on the team's Drive, not public)
+CLAUDE.md
+sync.sh
+colab_jobs/
+archive/
+report/

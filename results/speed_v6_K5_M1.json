@@ -1,0 +1,12 @@
+{
+  "v6_K": 5,
+  "v6_M": 1,
+  "v6_params_M": 298.619905,
+  "v6_pairs": 15525,
+  "v6_index_secs_once": 7.258602857589722,
+  "v6_stage1_secs": 18.969273567199707,
+  "v6_stage2_secs": 108.31386828422546,
+  "v6_all_test_secs": 127.28314185142517,
+  "v6_comments_per_sec": 24.39443240350241,
+  "v6_speedup_vs_longformer": 428.42392020082593
+}
