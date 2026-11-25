@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spoiler Filter Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Template for the demo page. src/build_demo_page.py puts the data in and writes docs/index.html. */
+:root {
+  --bg: #f4f6fa; --card: #ffffff; --text: #1e2430; --muted: #5b6475; --line: #dde2ea;
+  --blue: #3157d5; --blue-soft: #e6ecfd; --green: #1d7f45; --green-soft: #e3f4ea;
+  --red: #b8401a; --red-soft: #fbe9e2; --grey: #c9cfd9; --hidden: #eceff4;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #13161d; --card: #1b2029; --text: #e6e9ef; --muted: #9aa3b2; --line: #2c3341;
+  --blue: #86a0ff; --blue-soft: #253055; --green: #5fd08f; --green-soft: #1d3428;
+  --red: #ff9466; --red-soft: #3a261f; --grey: #3a4252; --hidden: #232a35; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #13161d; --card: #1b2029; --text: #e6e9ef; --muted: #9aa3b2; --line: #2c3341;
+  --blue: #86a0ff; --blue-soft: #253055; --green: #5fd08f; --green-soft: #1d3428;
+  --red: #ff9466; --red-soft: #3a261f; --grey: #3a4252; --hidden: #232a35; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 48px;
+}
+.page { max-width: 760px; margin: 0 auto; display: grid; gap: 16px; }
+h1 { margin: 0; font-size: clamp(26px, 5vw, 34px); line-height: 1.2; }
+h2 { margin: 0; font-size: 17px; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; }
+.step { display: flex; gap: 10px; align-items: center; }
+.num { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: var(--card);
+  display: grid; place-items: center; font-size: 14px; font-weight: 700; }
+
+/* buttons */
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+button { font: inherit; cursor: pointer; }
+.choice { border: 1px solid var(--line); background: var(--bg); color: var(--text); padding: 7px 14px; border-radius: 8px; }
+.choice[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: var(--card); font-weight: 600; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* the slider */
+.progress-title { font-size: 20px; }
+.progress-title b { color: var(--blue); font-size: 26px; }
+#epCount { display: block; }
+.slider-row { display: flex; align-items: center; gap: 12px; }
+.round { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--card); color: var(--text); font-size: 22px; line-height: 1; }
+.round:disabled { opacity: .35; cursor: default; }
+input[type=range] { flex: 1; min-width: 0; -webkit-appearance: none; appearance: none; height: 28px; background: transparent; }
+input[type=range]::-webkit-slider-runnable-track {
+  height: 10px; border-radius: 5px;
+  background: linear-gradient(to right, var(--blue) 0 var(--pct), var(--grey) var(--pct) 100%); }
+input[type=range]::-moz-range-track { height: 10px; border-radius: 5px; background: var(--grey); }
+input[type=range]::-moz-range-progress { height: 10px; border-radius: 5px; background: var(--blue); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -8px;
+  border-radius: 50%; background: var(--card); border: 4px solid var(--blue); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--card);
+  border: 4px solid var(--blue); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+.scale { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); padding: 0 52px; }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend .w::before { background: var(--blue); }
+.legend .n::before { background: var(--grey); }
+
+/* the two result boxes */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.result { border: 2px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 8px; }
+.result.ours { border-color: var(--blue); }
+.result h2 { font-size: 15px; }
+.stat { display: grid; gap: 3px; font-size: 14px; }
+.stat b { font-size: 18px; white-space: nowrap; }
+.bar { height: 8px; border-radius: 4px; background: var(--hidden); overflow: hidden; }
+.bar i { display: block; height: 100%; }
+.bar .good { background: var(--green); }
+.bar .bad { background: var(--red); }
+
+/* comments */
+.thread { display: grid; gap: 10px; }
+.thread-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.comment { background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--grey); border-radius: 10px;
+  padding: 12px 14px; display: grid; gap: 8px; }
+.comment.is-hidden { border-left-color: var(--blue); }
+.comment-text { overflow-wrap: anywhere; }
+.cover { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: var(--hidden); border-radius: 8px; padding: 10px 12px; }
+.cover button { border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 6px; padding: 4px 10px; font-size: 14px; }
+.info { font-size: 14px; color: var(--muted); }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { font-size: 13px; padding: 2px 9px; border-radius: 999px; }
+.tag.spoiler { background: var(--red-soft); color: var(--red); }
+.tag.safe { background: var(--hidden); color: var(--muted); }
+.tag.right { background: var(--green-soft); color: var(--green); }
+.tag.wrong { background: var(--red-soft); color: var(--red); }
+.note { font-size: 14px; color: var(--muted); }
+a { color: var(--blue); }
+@media (max-width: 560px) { .compare { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header style="display:grid; gap:6px">
+    <h1>Spoiler Filter Demo</h1>
+    <p class="muted">A normal spoiler detector hides story comments from everyone. Our filter hides a comment only if
+      you have <b>not watched</b> the episode it talks about. These are real comments from 4 test shows the model never saw
+      in training, with the model's real answers.</p>
+  </header>
+
+  <section class="box" aria-label="Pick a show">
+    <div class="step"><span class="num">1</span><h2>Pick a show</h2></div>
+    <div class="choices" id="shows"></div>
+  </section>
+
+  <section class="box" aria-label="Your progress">
+    <div class="step"><span class="num">2</span><h2>How far have you watched?</h2></div>
+    <p class="progress-title">I have watched up to episode <b id="epText"></b> <span class="muted small" id="epCount"></span></p>
+    <div class="slider-row">
+      <button class="round" id="minus" aria-label="One episode back">−</button>
+      <input type="range" id="ep" min="0" max="1" step="1" value="0" aria-label="Last episode you watched">
+      <button class="round" id="plus" aria-label="One episode forward">+</button>
+    </div>
+    <div class="scale"><span id="first"></span><span id="last"></span></div>
+    <div class="legend"><span class="w">watched</span><span class="n">not watched yet (spoilers live here)</span></div>
+  </section>
+
+  <section class="box" aria-label="Results">
+    <div class="step"><span class="num">3</span><h2>See what each filter does for you</h2></div>
+    <div class="compare">
+      <div class="result ours">
+        <h2>Our filter (knows your episode)</h2>
+        <div class="stat"><span>Spoilers hidden: <b id="oCaught"></b></span><div class="bar"><i class="good" id="oCaughtBar"></i></div></div>
+        <div class="stat"><span>Safe comments hidden by mistake: <b id="oWrong"></b></span><div class="bar"><i class="bad" id="oWrongBar"></i></div></div>
+      </div>
+      <div class="result">
+        <h2>Normal spoiler detector</h2>
+        <div class="stat"><span>Spoilers hidden: <b id="cCaught"></b></span><div class="bar"><i class="good" id="cCaughtBar"></i></div></div>
+        <div class="stat"><span>Safe comments hidden by mistake: <b id="cWrong"></b></span><div class="bar"><i class="bad" id="cWrongBar"></i></div></div>
+      </div>
+    </div>
+    <p class="note">Both use the same rule: hide if the score is above 50%. On the full test set, when both are set to hide the
+      same 10% of safe comments, ours hides 75% of spoilers and the normal detector 44%.</p>
+  </section>
+
+  <section class="thread" aria-label="Comments">
+    <div class="thread-head">
+      <h2>The comment thread</h2>
+      <div class="choices" id="modes" role="group" aria-label="Filter used for the thread">
+        <button class="choice" data-mode="ours" aria-pressed="true">Our filter</button>
+        <button class="choice" data-mode="classic" aria-pressed="false">Normal detector</button>
+      </div>
+    </div>
+    <div class="thread" id="list"></div>
+  </section>
+
+  <p class="note">Each show has 50 comments picked at random from the hand-labelled test set (36 about the story, 14 not).
+    "Spoiler for you" uses the real label: the comment is about the story and about a later episode than yours.
+    Our filter hides a comment when P(about the story) × P(about a later episode) is above 50%; the normal detector hides
+    every comment it thinks is about the story.
+    <a href="https://github.com/AhmedDatori/progress-aware-spoiler-filter">Code and details on GitHub</a>.</p>
+</div>
+
+<script>
+const DATA = __DATA__;
+const NAMES = { attack_on_titan: "Attack on Titan", legend_of_korra: "The Legend of Korra",
+                kaguya_sama_love_is_war: "Kaguya-sama", arcane: "Arcane" };
+let show = "arcane", mode = "ours", k = 0;
+const $ = id => document.getElementById(id);
+const pct = x => Math.round(x * 100) + "%";
+
+function judge(c, eps, myEp) {
+  let later = 0;
+  eps.forEach((e, i) => { if (e > myEp) later += c.pe[i]; });
+  let best = 0;
+  c.pe.forEach((p, i) => { if (p > c.pe[best]) best = i; });
+  return {
+    later, guess: eps[best],
+    ours: c.pp * later > 0.5,          // our filter
+    classic: c.pp > 0.5,               // normal detector
+    spoiler: c.plot === 1 && c.ep > myEp   // the truth
+  };
+}
+
+function setBar(id, n, total) { $(id).style.width = total ? (100 * n / total) + "%" : "0"; }
+
+function draw() {
+  const eps = DATA[show].episodes, myEp = eps[k], slider = $("ep");
+  $("epText").textContent = myEp;
+  $("epCount").textContent = `(${k + 1} of ${eps.length} episodes)`;
+  $("first").textContent = "episode " + eps[0];
+  $("last").textContent = "episode " + eps[eps.length - 2];
+  slider.style.setProperty("--pct", (100 * k / Math.max(1, eps.length - 2)) + "%");
+  $("minus").disabled = k === 0;
+  $("plus").disabled = k === eps.length - 2;
+
+  let spoilers = 0, safe = 0, oc = 0, of = 0, cc = 0, cf = 0;
+  const list = $("list");
+  list.innerHTML = "";
+  for (const c of DATA[show].comments) {
+    const r = judge(c, eps, myEp);
+    if (r.spoiler) { spoilers++; oc += r.ours; cc += r.classic; } else { safe++; of += r.ours; cf += r.classic; }
+    const hide = mode === "ours" ? r.ours : r.classic;
+    const right = hide === r.spoiler;
+
+    const el = document.createElement("article");
+    el.className = "comment" + (hide ? " is-hidden" : "");
+    const truth = c.plot ? `About episode ${c.ep}` : "Not about the story";
+    el.innerHTML = `
+      ${hide ? `<div class="cover"><span>🙈 Hidden: may be a spoiler (looks like episode ${r.guess})</span><button>Show anyway</button></div>` : ""}
+      <p class="comment-text" ${hide ? "hidden" : ""}></p>
+      <div class="tags">
+        <span class="tag ${r.spoiler ? "spoiler" : "safe"}">${truth}: ${r.spoiler ? "spoiler for you" : "safe for you"}</span>
+        <span class="tag ${right ? "right" : "wrong"}">${hide ? "Hidden" : "Shown"}: ${right ? "right call" : "wrong call"}</span>
+      </div>
+      <p class="info">About the story: <b>${pct(c.pp)}</b> · Best guess: <b>episode ${r.guess}</b> · After your episode: <b>${pct(r.later)}</b></p>`;
+    el.querySelector(".comment-text").textContent = c.c;
+    const btn = el.querySelector(".cover button");
+    if (btn) btn.addEventListener("click", () => { el.querySelector(".cover").remove(); el.querySelector(".comment-text").hidden = false; });
+    list.appendChild(el);
+  }
+  $("oCaught").textContent = `${oc} of ${spoilers}`; setBar("oCaughtBar", oc, spoilers);
+  $("oWrong").textContent = `${of} of ${safe}`;     setBar("oWrongBar", of, safe);
+  $("cCaught").textContent = `${cc} of ${spoilers}`; setBar("cCaughtBar", cc, spoilers);
+  $("cWrong").textContent = `${cf} of ${safe}`;     setBar("cWrongBar", cf, safe);
+}
+
+function pickShow(name) {
+  show = name;
+  const n = DATA[name].episodes.length;
+  $("ep").max = n - 2;                       // you can't have "watched up to" the last episode and still be spoiled
+  k = Math.floor((n - 2) / 2);
+  $("ep").value = k;
+  document.querySelectorAll("#shows button").forEach(b => b.setAttribute("aria-pressed", b.dataset.show === name));
+  draw();
+}
+
+for (const name of Object.keys(NAMES)) {
+  const b = document.createElement("button");
+  b.className = "choice"; b.dataset.show = name; b.textContent = NAMES[name];
+  b.addEventListener("click", () => pickShow(name));
+  $("shows").appendChild(b);
+}
+document.querySelectorAll("#modes button").forEach(b => b.addEventListener("click", () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll("#modes button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  draw();
+}));
+$("ep").addEventListener("input", e => { k = +e.target.value; draw(); });
+$("minus").addEventListener("click", () => { if (k > 0) { k--; $("ep").value = k; draw(); } });
+$("plus").addEventListener("click", () => { if (k < +$("ep").max) { k++; $("ep").value = k; draw(); } });
+pickShow("arcane");
+</script>
+</body>
+</html>

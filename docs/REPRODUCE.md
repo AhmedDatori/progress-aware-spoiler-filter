@@ -29,7 +29,7 @@ uv run python demo.py --examples
 uv run python demo.py legend_of_korra 20 "Korra finally beat Amon"
 ```
 
-`demo.html` (the web demo) needs nothing: it reads saved outputs. To rebuild its data: `uv run python make_demo_data.py`.
+`demo.html` (the web demo) needs nothing: it reads saved outputs. To rebuild it: `uv run python make_demo_data.py` (needs the models), then `uv run python build_demo_page.py`.
 
 ## B. Check every number from saved scores
 

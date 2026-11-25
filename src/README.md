@@ -24,6 +24,7 @@ Run from this folder: `uv run python <script>.py ...`.
 | `error_analysis.py` | errors | Where v6 fails: per show, by length, by distance; joins the 60 hand labels. |
 | `demo.py` | demo | The full filter on one comment, from the command line. |
 | `make_demo_data.py` | demo | Runs the filter on 200 test comments for the web demo. |
+| `demo_page.html`, `build_demo_page.py` | demo | The web demo's template, and the script that puts the data in and writes `docs/index.html`. |
 | `figures.py` | report | The 3 figures in `results/figures/`. |
 
 Model and score names used across scripts: `v6_bi` (stage 1 bi-encoder), `v6_first` (stage 1 scores = bi-encoder + BM25),
